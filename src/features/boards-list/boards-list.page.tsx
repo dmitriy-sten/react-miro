@@ -1,6 +1,10 @@
+import { rqClient } from "@/shared/api/instance";
 import { Link } from "@tanstack/react-router";
 
 export function BoardsListPage() {
+
+  rqClient.useQuery('get','/boards')
+
   return (
     <div>
       <Link to="/boards/$id" params={{ id: "3" }}>
