@@ -8,39 +8,44 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as RegisterImport } from './routes/register'
-import { Route as LoginImport } from './routes/login'
-import { Route as BoardsIndexImport } from './routes/boards.index'
-import { Route as BoardsIdImport } from './routes/boards.$id'
+
+// Create Virtual Routes
+
+const RegisterLazyImport = createFileRoute('/register')()
+const LoginLazyImport = createFileRoute('/login')()
+const BoardsIndexLazyImport = createFileRoute('/boards/')()
+const BoardsIdLazyImport = createFileRoute('/boards/$id')()
 
 // Create/Update Routes
 
-const RegisterRoute = RegisterImport.update({
+const RegisterLazyRoute = RegisterLazyImport.update({
   id: '/register',
   path: '/register',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/register.lazy').then((d) => d.Route))
 
-const LoginRoute = LoginImport.update({
+const LoginLazyRoute = LoginLazyImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/login.lazy').then((d) => d.Route))
 
-const BoardsIndexRoute = BoardsIndexImport.update({
+const BoardsIndexLazyRoute = BoardsIndexLazyImport.update({
   id: '/boards/',
   path: '/boards/',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/boards.index.lazy').then((d) => d.Route))
 
-const BoardsIdRoute = BoardsIdImport.update({
+const BoardsIdLazyRoute = BoardsIdLazyImport.update({
   id: '/boards/$id',
   path: '/boards/$id',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/boards.$id.lazy').then((d) => d.Route))
 
 // Populate the FileRoutesByPath interface
 
@@ -50,28 +55,28 @@ declare module '@tanstack/react-router' {
       id: '/login'
       path: '/login'
       fullPath: '/login'
-      preLoaderRoute: typeof LoginImport
+      preLoaderRoute: typeof LoginLazyImport
       parentRoute: typeof rootRoute
     }
     '/register': {
       id: '/register'
       path: '/register'
       fullPath: '/register'
-      preLoaderRoute: typeof RegisterImport
+      preLoaderRoute: typeof RegisterLazyImport
       parentRoute: typeof rootRoute
     }
     '/boards/$id': {
       id: '/boards/$id'
       path: '/boards/$id'
       fullPath: '/boards/$id'
-      preLoaderRoute: typeof BoardsIdImport
+      preLoaderRoute: typeof BoardsIdLazyImport
       parentRoute: typeof rootRoute
     }
     '/boards/': {
       id: '/boards/'
       path: '/boards'
       fullPath: '/boards'
-      preLoaderRoute: typeof BoardsIndexImport
+      preLoaderRoute: typeof BoardsIndexLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -80,25 +85,25 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/boards/$id': typeof BoardsIdRoute
-  '/boards': typeof BoardsIndexRoute
+  '/login': typeof LoginLazyRoute
+  '/register': typeof RegisterLazyRoute
+  '/boards/$id': typeof BoardsIdLazyRoute
+  '/boards': typeof BoardsIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/boards/$id': typeof BoardsIdRoute
-  '/boards': typeof BoardsIndexRoute
+  '/login': typeof LoginLazyRoute
+  '/register': typeof RegisterLazyRoute
+  '/boards/$id': typeof BoardsIdLazyRoute
+  '/boards': typeof BoardsIndexLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/boards/$id': typeof BoardsIdRoute
-  '/boards/': typeof BoardsIndexRoute
+  '/login': typeof LoginLazyRoute
+  '/register': typeof RegisterLazyRoute
+  '/boards/$id': typeof BoardsIdLazyRoute
+  '/boards/': typeof BoardsIndexLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -111,17 +116,17 @@ export interface FileRouteTypes {
 }
 
 export interface RootRouteChildren {
-  LoginRoute: typeof LoginRoute
-  RegisterRoute: typeof RegisterRoute
-  BoardsIdRoute: typeof BoardsIdRoute
-  BoardsIndexRoute: typeof BoardsIndexRoute
+  LoginLazyRoute: typeof LoginLazyRoute
+  RegisterLazyRoute: typeof RegisterLazyRoute
+  BoardsIdLazyRoute: typeof BoardsIdLazyRoute
+  BoardsIndexLazyRoute: typeof BoardsIndexLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  LoginRoute: LoginRoute,
-  RegisterRoute: RegisterRoute,
-  BoardsIdRoute: BoardsIdRoute,
-  BoardsIndexRoute: BoardsIndexRoute,
+  LoginLazyRoute: LoginLazyRoute,
+  RegisterLazyRoute: RegisterLazyRoute,
+  BoardsIdLazyRoute: BoardsIdLazyRoute,
+  BoardsIndexLazyRoute: BoardsIndexLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -141,16 +146,16 @@ export const routeTree = rootRoute
       ]
     },
     "/login": {
-      "filePath": "login.tsx"
+      "filePath": "login.lazy.tsx"
     },
     "/register": {
-      "filePath": "register.tsx"
+      "filePath": "register.lazy.tsx"
     },
     "/boards/$id": {
-      "filePath": "boards.$id.tsx"
+      "filePath": "boards.$id.lazy.tsx"
     },
     "/boards/": {
-      "filePath": "boards.index.tsx"
+      "filePath": "boards.index.lazy.tsx"
     }
   }
 }

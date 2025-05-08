@@ -1,7 +1,7 @@
 import { BoardsListPage } from "@/features/boards-list/boards-list.page";
-import { createFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/boards/")({
+export const Route = createLazyFileRoute("/boards/")({
   component: RouteComponent,
 });
 

@@ -3,6 +3,7 @@ import { App } from "../app";
 
 export const Route = createRootRoute({
   component: RootComponent,
+
 });
 
 function RootComponent() {
